@@ -1,0 +1,7 @@
+server:
+  host: example.com
+  proxy:
+    port: 8080
+  transmitter:
+    port: 8081
+
