@@ -23,7 +23,9 @@
 const url  = require('url');
 const http = require('http');
 const crypto = require('crypto');
+const logger = require('log4js').getLogger();
 
+logger.level = process.env.LOGGER || 'DEBUG';
 const transmitterPort = process.env.TRANSMITTER_PORT || 8081
 const io = require('socket.io').listen(transmitterPort);
 const responses = {};
@@ -31,6 +33,7 @@ const responses = {};
 const wsServer = io.sockets.on('connection', function (socket) {
   socket.on('response header', function (data) {
     const response = responses[data.requestId];
+    logger.debug('response header=%o', data.headers);
     response.writeHead(data.statusCode, data.headers);
   });
 
@@ -43,6 +46,7 @@ const wsServer = io.sockets.on('connection', function (socket) {
   socket.on('response end', function (data) {
     const response = responses[data.requestId];
     response.end();
+    logger.debug('response end=%s', data.requestId);
     delete responses[data.requestId];
   });
 });
@@ -54,6 +58,7 @@ const delegateRequest = function (options, res) {
     const requestId = crypto.randomBytes(64).toString('hex');
     responses[requestId] = res;
     options["requestId"] = requestId;
+    logger.debug('delegate request: %s', requestId);
     socket.emit('delegate request', options);
   }
 };
@@ -84,7 +89,6 @@ const proxyServer = http.createServer(function (req, res) {
   };
 
   if (req.method === 'POST') {
-    console.log("POST");
     let body='';
     req.on('data', function (data) {
       body +=data;
@@ -100,5 +104,5 @@ const proxyServer = http.createServer(function (req, res) {
 });
 
 proxyServer.listen((process.env.PORT || 8080), () => {
-  console.log(`Start proxy`);
+  logger.info('Start mariposa');
 });
