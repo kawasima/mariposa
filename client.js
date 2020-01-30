@@ -23,17 +23,29 @@
 
 const client = require('socket.io-client');
 const http = require('http');
+const logger = require('log4js').getLogger();
 const host = process.env.TRANSMITTER_HOST || 'localhost';
 const port = process.env.TRANSMITTER_PORT || 8081;
+const mariposaUrl = 'http://' + host + ':' + port
 
+logger.level = process.env.LOGGER || 'DEBUG';
 client.transports = ['xhr-polling'];
 
-const socket = client.connect('http://' + host + ':' + port);
+const socket = client.connect(mariposaUrl);
+
+socket.on('connect_error', (error) => {
+  logger.error(error);
+});
+socket.on('connect', () => {
+  logger.info(`Connected to ${mariposaUrl}`);
+});
 
 socket.on('delegate request', function (options) {
   delete options.headers["accept-encoding"];
   const postdata = options.postdata;
   delete options.postdata;
+
+  logger.debug('Request: %o', options);
 
   const request = http.request(
     options,
@@ -60,7 +72,7 @@ socket.on('delegate request', function (options) {
     });
 
   request.on('error', function (error) {
-    console.log('Error:' + error);
+    logger.error('Error:' + error);
   });
 
   if (postdata) {
