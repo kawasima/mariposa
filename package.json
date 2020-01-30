@@ -1,0 +1,24 @@
+{
+  "name": "mariposa",
+  "version": "0.0.1",
+  "description": "Mariposa ============= Mariposa is a proxy server to access safely to the web application inside firewall from outside.",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:server": "node server.js",
+    "start:client": "node client.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://kawasima@github.com/kawasima/mariposa.git"
+  },
+  "author": "kawasima",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kawasima/mariposa/issues"
+  },
+  "homepage": "https://github.com/kawasima/mariposa#readme",
+  "dependencies": {
+    "socket.io": "^2.3.0"
+  }
+}
