@@ -20,6 +20,6 @@
   "homepage": "https://github.com/kawasima/mariposa#readme",
   "dependencies": {
     "log4js": "^6.1.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.5.0"
   }
 }
